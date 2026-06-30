@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: error-pages
+  namespace: ingress-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: error-pages
+  template:
+    metadata:
+      labels:
+        app: error-pages
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+        volumeMounts:
+        - name: error-pages-volume
+          mountPath: /usr/share/nginx/html/404.html
+          subPath: 404.html
+
+      volumes:
+      - name: error-pages-volume
+        configMap:
+          name: error-pages-html
+---            
+apiVersion: v1
+kind: Service
+metadata:
+  name: error-pages
+  namespace: ingress-app
+spec:
+  selector:
+    app: error-pages
+  ports:
+  - port: 80
+    targetPort: 80
+

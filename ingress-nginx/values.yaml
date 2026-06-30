@@ -1,0 +1,21 @@
+controller:
+  hostNetwork: false
+
+  service:
+    enabled: true
+    type: LoadBalancer
+
+  ingressClassResource:
+    name: nginx
+    enabled: true
+    default: true
+
+  ingressClass: nginx
+
+  admissionWebhooks:
+    enabled: true
+
+  config:
+    use-forwarded-headers: "true"
+    compute-full-forwarded-for: "true"
+    allow-snippet-annotations: "true"

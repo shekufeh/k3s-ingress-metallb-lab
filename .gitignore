@@ -1,0 +1,6 @@
+*.log
+*.swp
+*.tmp
+.DS_Store
+tls.key
+tls.crt

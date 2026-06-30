@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lab-ingress
+  namespace: ingress-app
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/custom-http-errors: "404,500,502,503,504"
+    nginx.ingress.kubernetes.io/default-backend: error-pages
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - app.lab.local
+    - admin.lab.local
+    secretName: lab-wildcard-tls
+  rules:
+  - host: app.lab.local
+    http:
+      paths:
+      - path: /api(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: app2
+            port:
+              number: 80
+
+      - path: /foo(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: app1
+            port:
+              number: 80
+
+  - host: admin.lab.local
+    http:
+      paths:
+      - path: /value(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: app3
+            port:
+              number: 80
+
